@@ -4,12 +4,17 @@
         background-color: beige;
     }
 
+    .project_persons {
+        padding-left: 4em;
+    }
+
     .project_person {
         padding-left: 4em;
     }
 
     .project_tasks {
         background-color: lavender;
+        padding-left: 4em;
     }
 
     .project_task {
@@ -19,14 +24,17 @@
     .task_people {
         padding-left: 4em;
     }
+
+    .task_preceding_tasks {
+        background-color: lavenderblush;
+        padding-left: 4em;
+    }
 </style>
 
-
-<h1>There are {{ projects|length }} projects</h1>
 {% for p in projects %}
 
     <div class="project_outline">
-        <p>Project {{ forloop.counter }}</p>
+        <p>Project {{ forloop.counter }} of {{ projects|length }}</p>
         <h2>{{ p.name }}</h2>
 
         <p>
@@ -45,25 +53,52 @@
             {% endif %}
         </p>
 
-        <h3>Project has {{ p.person_set.all|length }} workers assigned.</h3>
-        <div class="project_person">
+        <div class="project_persons">
+            <h3>Project has {{ p.person_set.all|length }} workers assigned.</h3>
+            <div class="project_person">
+                {% for person in p.person_set.all %}
+                    <p>{{ person.name }} is assigned
 
-            {% for person in p.person_set.all %}
-                <p>Worker {{ person.name }} is assigned</p>
-            {% endfor %}
+                    {% for project_person_time in p.projecttimeassignment_set.all %}
+                        {% if project_person_time.person == person %}
+                            for {{ project_person_time.hours }} hours,
+                            {% if project_person_time.financed %}
+                            <strong>funded</strong>
+                                {% else %}
+                                <strong>for free</strong>
+                                {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            </p>
+            </div>
+
+            <div class="project_person_time">
+                {% for project_person_time in p.projecttimeassignment_set.all %}
+                    <p>{{ project_person_time.hours }} hours are assigned</p>
+                {% endfor %}
+            </div>
         </div>
-
 
         <div class="project_tasks">
             <h3>Project has {{ p.task_set.all|length }} tasks.</h3>
             <div class="project_task">
 
                 {% for task in p.task_set.all %}
-                    <p>Task <strong>{{ task.name }}</strong> has {{ task.people_assigned.all|length }} people_assigned</p>
+                    <h4>{{ task.name }}</h4>
+                    <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}</p>
+
+                    <p>{{ task.people_assigned.all|length }} people_assigned</p>
 
                     {% for taskpeople in task.people_assigned.all %}
                         <div class="task_people">
-                        <p>{{ taskpeople.name }} is assigned to this task.</p>
+                            <p>{{ taskpeople.name }} is assigned to this task.</p>
+                        </div>
+                    {% endfor %}
+
+                    {% for preceding_task in task.preceding_tasks.all %}
+                        <div class="task_preceding_tasks">
+                            <p><strong>{{ preceding_task.name }}</strong> must complete before this task begins.</p>
                         </div>
                     {% endfor %}
 

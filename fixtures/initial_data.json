@@ -81,5 +81,16 @@
         2
       ]
     }
+  },
+
+  {
+    "model": "tracker.projecttimeassignment",
+    "pk": 1,
+    "fields": {
+      "person": 1,
+      "project": 1,
+      "hours": 4,
+      "financed": true
+    }
   }
 ]

@@ -15,6 +15,7 @@ class Person(models.Model):
     available_start_date = models.DateTimeField('employment_start_date')
     available_end_date = models.DateTimeField('employment_end_date')
     projects = models.ManyToManyField(Project)
+    hours_per_week = models.IntegerField(default=35)
 
 
 class Task(models.Model):
@@ -25,3 +26,11 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     preceding_tasks = models.ManyToManyField('Task', related_name='preceding')
     subsequent_tasks = models.ManyToManyField('Task', related_name='subsequent')
+
+
+class ProjectTimeAssignment(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    hours = models.IntegerField()
+    financed = models.BooleanField(default=False)
+
