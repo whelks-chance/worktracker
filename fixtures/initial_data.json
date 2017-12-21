@@ -1,11 +1,28 @@
 [
+
+  {
+    "model": "tracker.project",
+    "pk": 1,
+    "fields": {
+      "name": "Lost Visions"
+    }
+  },
+  {
+    "model": "tracker.project",
+    "pk": 2,
+    "fields": {
+      "name": "Spanish uni paper writing"
+    }
+  },
+
   {
     "model": "tracker.person",
     "pk": 1,
     "fields": {
       "name": "Ian",
       "available_start_date": "2017-05-01 00:00:00",
-      "available_end_date": "2019-05-01 00:00:00"
+      "available_end_date": "2019-05-01 00:00:00",
+      "projects": [1]
     }
   },
   {
@@ -14,15 +31,55 @@
     "fields": {
       "name": "Unai",
       "available_start_date": "2017-09-01 00:00:00",
-      "available_end_date": "2019-09-01 00:00:00"
+      "available_end_date": "2019-09-01 00:00:00",
+      "projects": [1, 2]
     }
   },
 
   {
-    "model": "tracker.project",
+    "model": "tracker.task",
     "pk": 1,
     "fields": {
-      "name": "Lost Visions"
+      "name": "First task",
+      "people_assigned": [
+        1
+      ],
+      "start_date": "2017-11-06 00:00:00",
+      "end_date": "2017-11-09 00:00:00",
+      "project": "1",
+      "preceding_tasks": []
+    }
+  },
+  {
+    "model": "tracker.task",
+    "pk": 2,
+    "fields": {
+      "name": "Middle task",
+      "people_assigned": [
+        2
+      ],
+      "start_date": "2017-11-10 00:00:00",
+      "end_date": "2017-11-15 00:00:00",
+      "project": "1",
+      "preceding_tasks": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "tracker.task",
+    "pk": 3,
+    "fields": {
+      "name": "Last task",
+      "people_assigned": [
+        1
+      ],
+      "start_date": "2017-11-16 00:00:00",
+      "end_date": "2017-11-18 00:00:00",
+      "project": "1",
+      "preceding_tasks": [
+        2
+      ]
     }
   }
 ]

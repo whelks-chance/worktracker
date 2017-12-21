@@ -1,24 +1,77 @@
 
+<style>
+    .project_outline {
+        background-color: beige;
+    }
+
+    .project_person {
+        padding-left: 4em;
+    }
+
+    .project_tasks {
+        background-color: lavender;
+    }
+
+    .project_task {
+        padding-left: 4em;
+    }
+
+    .task_people {
+        padding-left: 4em;
+    }
+</style>
+
+
 <h1>There are {{ projects|length }} projects</h1>
 {% for p in projects %}
-    <p>Project {{ forloop.counter }}</p>
-    <h2>{{ p.name }}</h2>
 
-    <p>
-        {% if p.start_date %}
-            The project started at {{ p.start_date }}.
-        {% else %}
-            The project has no recorded start date.
-        {% endif %}
-    </p>
+    <div class="project_outline">
+        <p>Project {{ forloop.counter }}</p>
+        <h2>{{ p.name }}</h2>
 
-    <p>
-        {% if p.end_date %}
-            The project is due to finish at {{ p.end_date }}.
-        {% else %}
-            The project will probably last forever.
-        {% endif %}
-    </p>
+        <p>
+            {% if p.start_date %}
+                The project started at {{ p.start_date }}.
+            {% else %}
+                The project has no recorded start date.
+            {% endif %}
+        </p>
+
+        <p>
+            {% if p.end_date %}
+                The project is due to finish at {{ p.end_date }}.
+            {% else %}
+                The project will probably last forever.
+            {% endif %}
+        </p>
+
+        <h3>Project has {{ p.person_set.all|length }} workers assigned.</h3>
+        <div class="project_person">
+
+            {% for person in p.person_set.all %}
+                <p>Worker {{ person.name }} is assigned</p>
+            {% endfor %}
+        </div>
+
+
+        <div class="project_tasks">
+            <h3>Project has {{ p.task_set.all|length }} tasks.</h3>
+            <div class="project_task">
+
+                {% for task in p.task_set.all %}
+                    <p>Task <strong>{{ task.name }}</strong> has {{ task.people_assigned.all|length }} people_assigned</p>
+
+                    {% for taskpeople in task.people_assigned.all %}
+                        <div class="task_people">
+                        <p>{{ taskpeople.name }} is assigned to this task.</p>
+                        </div>
+                    {% endfor %}
+
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
 
 {% endfor %}
 
