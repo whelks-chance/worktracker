@@ -16,6 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from tracker import views
+
 urlpatterns = [
+
+    path('explain', views.explain, name='explain'),
+
     path('admin/', admin.site.urls),
 ]

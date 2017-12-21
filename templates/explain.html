@@ -1,0 +1,5 @@
+
+<h1>There are {{ projects|length }} projects</h1>
+{% for p in projects %}
+    <p>{{ p.name }}</p>
+{% endfor %}
