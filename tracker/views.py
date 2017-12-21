@@ -9,5 +9,6 @@ def explain(request):
     return render(request, 'explain.html',
                   {
                       'projects': models.Project.objects.all(),
+                      'people': models.Person.objects.all()
                   }
                   )

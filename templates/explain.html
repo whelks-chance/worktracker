@@ -1,5 +1,25 @@
 
 <h1>There are {{ projects|length }} projects</h1>
 {% for p in projects %}
-    <p>{{ p.name }}</p>
+    <p>Project {{ forloop.counter }}</p>
+    <h2>{{ p.name }}</h2>
+
+    <p>
+        {% if p.start_date %}
+            The project started at {{ p.start_date }}.
+        {% else %}
+            The project has no recorded start date.
+        {% endif %}
+    </p>
+
+    <p>
+        {% if p.end_date %}
+            The project is due to finish at {{ p.end_date }}.
+        {% else %}
+            The project will probably last forever.
+        {% endif %}
+    </p>
+
 {% endfor %}
+
+<h3>There are {{ people|length }} people registered in the WorkTracker (tm)</h3>

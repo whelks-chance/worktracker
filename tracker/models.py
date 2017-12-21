@@ -11,13 +11,13 @@ class Person(models.Model):
 
 class Project(models.Model):
     name = models.CharField(max_length=200)
-    principal_investigator = Person()
-    start_date = models.DateTimeField('start date')
-    end_date = models.DateTimeField('end date')
+    principal_investigator = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
+    start_date = models.DateTimeField('start date', null=True)
+    end_date = models.DateTimeField('end date', null=True)
 
 
 class ProjectTeam(models.Model):
-    project = Project()
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
     person = Person()
 
 
@@ -26,6 +26,6 @@ class Task(models.Model):
     people_assigned = models.ManyToManyField(Person, 'assigned_to')
     start_date = models.DateTimeField('start date')
     end_date = models.DateTimeField('end date')
-    project_team = ProjectTeam()
+    project_team = models.ForeignKey(ProjectTeam, on_delete=models.CASCADE)
     preceding_tasks = models.ManyToManyField('Task', related_name='preceding')
     subsequent_tasks = models.ManyToManyField('Task', related_name='subsequent')

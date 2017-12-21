@@ -1,0 +1,28 @@
+[
+  {
+    "model": "tracker.person",
+    "pk": 1,
+    "fields": {
+      "name": "Ian",
+      "available_start_date": "2017-05-01 00:00:00",
+      "available_end_date": "2019-05-01 00:00:00"
+    }
+  },
+  {
+    "model": "tracker.person",
+    "pk": 2,
+    "fields": {
+      "name": "Unai",
+      "available_start_date": "2017-09-01 00:00:00",
+      "available_end_date": "2019-09-01 00:00:00"
+    }
+  },
+
+  {
+    "model": "tracker.project",
+    "pk": 1,
+    "fields": {
+      "name": "Lost Visions"
+    }
+  }
+]
