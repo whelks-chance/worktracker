@@ -1,3 +1,5 @@
+from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import render
 
 
@@ -12,3 +14,35 @@ def explain(request):
                       'people': models.Person.objects.all()
                   }
                   )
+
+
+def all_people_data(request):
+
+    all_time = models.ProjectTimeAssignment.objects.all()
+    all_people = models.Person.objects.all()
+
+    people_data = []
+    for person in all_people:
+
+        count = 0
+        for ta in all_time:
+            if ta.person == person:
+                count += ta.hours
+
+        people_data.append(
+            {
+                'count': count,
+                'name': person.name,
+                'id': person.id,
+                'start_date': person.available_start_date,
+                'end_date': person.available_end_date,
+                'hours_per_week': person.hours_per_week
+            }
+        )
+
+    api_data = {
+        # 'all_time': list(all_time),
+        'people_data': people_data
+    }
+
+    return JsonResponse(api_data)

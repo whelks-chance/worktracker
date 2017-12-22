@@ -1,5 +1,15 @@
 
 <style>
+    .person_details_outer {
+        background-color: honeydew;
+        padding: 1em;
+        margin: 1em;
+    }
+
+    .person_details_inner {
+        background-color: aliceblue;
+    }
+
     .project_outline {
         background-color: beige;
     }
@@ -31,6 +41,61 @@
     }
 </style>
 
+
+<script src="https://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js" integrity="sha256-2/3+Q1kMYR8MDaqFPNBgmLgiqWJjySkg1wqLx/iE5Zo=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/uk.js" integrity="sha256-vdBxOXCFJ8UqQyiJrWLlnT1O/Bnvmpn+yrVrOg0Xafw=" crossorigin="anonymous"></script>
+
+<script>
+    $( document ).ready(function() {
+
+        $.ajax({
+            method: "GET",
+            url: "{% url 'all_people_data' %}"
+        })
+            .done(function( msg ) {
+{#                alert( "Data Saved: " + msg );#}
+{#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
+
+                for(var a in msg['people_data']) {
+                    var data = msg['people_data'][a];
+                    {#                    $('#person_details_calc_' + data['id']).text(data['count']);#}
+
+
+{#                    var start = new moment(data['start_date']);#}
+                    var end = new moment(data['end_date']);
+
+                    {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
+                    var num_weeks = end.diff(moment(), 'week');
+                    var num_total_hours = num_weeks * data['hours_per_week'];
+                    var left_available = num_total_hours - data['count'];
+                    var perc_busy = data['count'] / num_total_hours * 100;
+
+                    var bad_news_msg = "has " + num_weeks + " weeks left, with " + data['count'] + " hours spoken for." +
+                        " This leaves them " + left_available + " hours. They are " + perc_busy + "% busy";
+
+                    $('#person_details_calc_' + data['id']).text(bad_news_msg);
+                }
+
+            });
+    });
+</script>
+
+<h3>There are {{ people|length }} people registered in the WorkTracker (tm)</h3>
+
+{% for person in people %}
+    <div class="person_details_outer" id="person_details_{{ person.id }}">
+        <p>{{ person.name }}</p>
+        <pre class="person_details_inner" id="person_details_calc_{{ person.id }}">
+        </pre>
+    </div>
+{% endfor %}
+
+
 {% for p in projects %}
 
     <div class="project_outline">
@@ -57,20 +122,20 @@
             <h3>Project has {{ p.person_set.all|length }} workers assigned.</h3>
             <div class="project_person">
                 {% for person in p.person_set.all %}
-                    <p>{{ person.name }} is assigned
+                    <p>{{ person.name }} is assigned:
 
                     {% for project_person_time in p.projecttimeassignment_set.all %}
                         {% if project_person_time.person == person %}
-                            for {{ project_person_time.hours }} hours,
+                            {{ project_person_time.hours }} hours
                             {% if project_person_time.financed %}
-                            <strong>funded</strong>
-                                {% else %}
-                                <strong>for free</strong>
-                                {% endif %}
+                                <strong>funded.</strong>
+                            {% else %}
+                                <strong>for free.</strong>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
-            </p>
+                </p>
             </div>
 
             <div class="project_person_time">
@@ -110,4 +175,3 @@
 
 {% endfor %}
 
-<h3>There are {{ people|length }} people registered in the WorkTracker (tm)</h3>

@@ -92,5 +92,27 @@
       "hours": 4,
       "financed": true
     }
+  },
+
+  {
+    "model": "tracker.projecttimeassignment",
+    "pk": 2,
+    "fields": {
+      "person": 1,
+      "project": 1,
+      "hours": 8,
+      "financed": false
+    }
+  },
+
+  {
+    "model": "tracker.projecttimeassignment",
+    "pk": 3,
+    "fields": {
+      "person": 1,
+      "project": 1,
+      "hours": 12,
+      "financed": true
+    }
   }
 ]
