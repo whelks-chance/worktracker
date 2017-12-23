@@ -23,41 +23,45 @@
     }
 
     .project_person {
+        background-color: honeydew;
         padding-left: 4em;
     }
 
     .project_tasks {
-        background-color: lavender;
-        padding-left: 4em;
-        padding-right: 4em;
-        padding-bottom: 0.1em;
+{#        padding-left: 4em;#}
+{#        padding-right: 4em;#}
+{#        padding-bottom: 0.1em;#}
 
     }
 
     .project_task {
+        background-color: lavender;
         padding-left: 4em;
         padding-right: 4em;
+        padding-bottom: 1em;
 
     }
 
     .task_people {
+        background-color: honeydew;
         padding-left: 4em;
     }
 
     .task_preceding_tasks {
-        background-color: lightcyan;
-        padding-left: 4em;
+{#        background-color: lightcyan;#}
+{#        padding-left: 4em;#}
     }
 
     .funds {
-        background-color: lavenderblush;
-                padding-bottom: 0.1em;
+{#                padding-bottom: 0.1em;#}
 
     }
 
     .fund {
+        background-color: lavenderblush;
         padding-left: 4em;
         padding-right: 4em;
+        padding-bottom: 1em;
     }
 
     .funding_body {
@@ -171,11 +175,20 @@
 
         <div class="project_tasks">
             <h3>Project has {{ p.task_set.all|length }} tasks.</h3>
-            <div class="project_task">
 
                 {% for task in p.task_set.all %}
+                    <div class="project_task">
+
                     <h4>{{ task.name }}</h4>
                     <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}</p>
+
+                    <div class="fund">
+                        <p>Time costed to {{ task.fund.reference_name }} - {{ task.fund.description_of_intent }}</p>
+                        <div class="funding_body">
+                            <p>Task funded by {{ task.fund.funding_body.name }} - {{ task.fund.funding_body.department }}</p>
+                        </div>
+                    </div>
+
 
                     <p>{{ task.people_assigned.all|length }} people_assigned</p>
 
@@ -190,9 +203,9 @@
                             <p><strong>{{ preceding_task.name }}</strong> must complete before this task begins.</p>
                         </div>
                     {% endfor %}
+            </div>
 
                 {% endfor %}
-            </div>
         </div>
 
     </div>

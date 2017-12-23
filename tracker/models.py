@@ -19,6 +19,7 @@ class FundingBody(models.Model):
 
 class Fund(models.Model):
     costed_hours = models.IntegerField()
+    reference_name = models.TextField()
     description_of_intent = models.TextField()
     cash = models.IntegerField(null=True)
     funding_body = models.ForeignKey(FundingBody, on_delete=models.CASCADE)

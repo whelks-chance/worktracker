@@ -14,7 +14,20 @@
     "pk": 1,
     "fields": {
       "costed_hours": 999999,
+      "reference_name": "RSE salaries",
       "description_of_intent": "Fund RSE time in between projects and when writing bids/papers",
+      "cash": null,
+      "funding_body": 1
+    }
+  },
+
+  {
+    "model": "tracker.fund",
+    "pk": 2,
+    "fields": {
+      "costed_hours": 600,
+      "reference_name": "Seedcorn 2",
+      "description_of_intent": "Fund RSE time on seedcorn projects.",
       "cash": null,
       "funding_body": 1
     }
@@ -76,7 +89,7 @@
     "pk": 2,
     "fields": {
       "name": "Middle task",
-      "fund": 1,
+      "fund": 2,
       "people_assigned": [
         2
       ],
