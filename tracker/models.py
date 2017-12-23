@@ -27,6 +27,9 @@ class Task(models.Model):
     preceding_tasks = models.ManyToManyField('Task', related_name='preceding')
     subsequent_tasks = models.ManyToManyField('Task', related_name='subsequent')
 
+    def __str__(self):
+        return '{}:{}:{}'.format(self.name, self.start_date, self.end_date)
+
 
 class ProjectTimeAssignment(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
@@ -34,3 +37,5 @@ class ProjectTimeAssignment(models.Model):
     hours = models.IntegerField()
     financed = models.BooleanField(default=False)
 
+    def __str__(self):
+        return '{}:{}:{} hours'.format(self.person.name, self.project.name, self.hours)
