@@ -1,5 +1,6 @@
 import calendar
 import os
+import pprint
 
 import pytz
 
@@ -7,9 +8,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "worktracker.settings")
 import django
 django.setup()
 
-from django.db.models import Sum
+from django.db.models import Sum, Min
 from tracker import models
 import datetime
+from workdays import networkdays
+from tracker.utils.utils import get_bank_holidays
 
 
 class Checks:
@@ -49,7 +52,7 @@ def overlaps(date1, date2):
     return overlap
 
 
-class WorkerPerson():
+class Person:
     def __init__(self, name):
         self.name = name
 
@@ -103,13 +106,85 @@ class WorkerPerson():
         return project_tasks
 
 
+def err(reason):
+    return {
+        "reason": reason
+    }
+
+
+class Task:
+
+    @staticmethod
+    def sanity_check_all():
+        all_tasks = models.Task.objects.all()
+
+        tasks_data = []
+        for t in all_tasks:
+            task = Task(t.id)
+
+            assert isinstance(t, models.Task)
+            errors = []
+            task_data = {
+                "name": t.name,
+                "fund": t.fund.reference_name,
+                "people_assigned": list(t.people_assigned.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
+                "start_date": t.start_date.isoformat(),
+                "end_date": t.end_date.isoformat(),
+                "project": t.project.name,
+                "preceding_tasks": list(t.preceding_tasks.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
+                "length_days": task.number_of_days(),
+                "length_working_days": task.number_of_working_days()
+            }
+
+            if t.end_date < t.start_date:
+                errors.append(err("Task ends before it starts"))
+
+            task_data['errors'] = errors
+            tasks_data.append(task_data)
+        print(pprint.pformat(tasks_data))
+        return tasks_data
+
+    # We can create this with either a models.Task or the DB id
+    def __init__(self, task):
+        if isinstance(task, models.Task):
+            self.db_task = task
+        elif isinstance(task, int):
+            self.db_task = models.Task.objects.get(id=task)
+        else:
+            raise Exception('Call Task with either model.Task object or DB id.')
+        self.bank_holidays = list(get_bank_holidays())
+
+    def number_of_days(self):
+        return (self.db_task.end_date - self.db_task.start_date).days + 1
+
+    def number_of_working_days(self):
+        return networkdays(self.db_task.start_date, self.db_task.end_date, holidays=self.bank_holidays)
+
+
 if __name__ == "__main__":
     c = Checks()
     c.check()
     print('\n\n')
 
-    wp = WorkerPerson(name="Ian")
+    wp = Person(name="Ian")
     print(wp.name, 'works', wp.hours_per_week(), 'hours per week.')
     print(wp.name, 'works', wp.hours_per_year(), 'hours per year.')
 
     print(wp.allocated_tasks_in_month(11, 2017))
+
+    t = Task(1)
+    print('\nTask', t.db_task.name)
+    print(t.number_of_days())
+    print(t.number_of_working_days())
+
+    t = Task(2)
+    print('\nTask', t.db_task.name)
+    print(t.number_of_days())
+    print(t.number_of_working_days())
+
+    t = Task(3)
+    print('\nTask', t.db_task.name)
+    print(t.number_of_days())
+    print(t.number_of_working_days())
+
+    # Task.sanity_check_all()

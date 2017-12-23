@@ -21,6 +21,8 @@ from tracker import views
 urlpatterns = [
 
     path('explain', views.explain, name='explain'),
+
+    path('all_task_data', views.all_task_data, name='all_task_data'),
     path('all_people_data', views.all_people_data, name='all_people_data'),
 
     path('admin/', admin.site.urls),

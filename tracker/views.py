@@ -17,6 +17,12 @@ def explain(request):
                   )
 
 
+def all_task_data(request):
+    from worktracker.tracker.checking.checking_inputs import Task
+    tasks_data = Task.sanity_check_all()
+    return JsonResponse(tasks_data)
+
+
 def all_people_data(request):
 
     all_time = models.ProjectTimeAssignment.objects.all()
