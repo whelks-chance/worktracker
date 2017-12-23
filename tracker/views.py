@@ -11,7 +11,8 @@ def explain(request):
     return render(request, 'explain.html',
                   {
                       'projects': models.Project.objects.all(),
-                      'people': models.Person.objects.all()
+                      'people': models.Person.objects.all(),
+                      'funds': models.Fund.objects.all(),
                   }
                   )
 

@@ -76,17 +76,31 @@ class WorkerPerson():
 
         total_time_assigned = person_allocations.aggregate(Sum('hours'))['hours__sum']
 
-        tasks = []
+        project_ids = person_allocations.values_list('project_id', flat=True).distinct()
+        print(list(project_ids))
+
+        person_tasks = models.Task.objects.filter(people_assigned__in=(self.db_person,))
+
+        print(person_tasks)
+
+        project_tasks = []
+        person_tasks_in_month = []
+
         for allocation in person_allocations:
             project = allocation.project
 
             for project_task in project.task_set.all():
                 print(project_task)
-
-                # if project_task.start_date <= now_aware <= project_task.end_date:
                 if overlaps((month_start, month_end), (project_task.start_date, project_task.end_date)):
-                    tasks.append(project_task)
-        return tasks
+                    project_tasks.append(project_task)
+
+        for person_task in person_tasks:
+            if overlaps((month_start, month_end), (person_task.start_date, person_task.end_date)):
+                person_tasks_in_month.append(person_task)
+
+        print(person_tasks_in_month)
+
+        return project_tasks
 
 
 if __name__ == "__main__":

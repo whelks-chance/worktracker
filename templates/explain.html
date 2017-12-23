@@ -12,6 +12,10 @@
 
     .project_outline {
         background-color: beige;
+        padding-left: 4em;
+        padding-right: 4em;
+        padding-bottom: 1em;
+
     }
 
     .project_persons {
@@ -25,10 +29,15 @@
     .project_tasks {
         background-color: lavender;
         padding-left: 4em;
+        padding-right: 4em;
+        padding-bottom: 0.1em;
+
     }
 
     .project_task {
         padding-left: 4em;
+        padding-right: 4em;
+
     }
 
     .task_people {
@@ -36,8 +45,23 @@
     }
 
     .task_preceding_tasks {
-        background-color: lavenderblush;
+        background-color: lightcyan;
         padding-left: 4em;
+    }
+
+    .funds {
+        background-color: lavenderblush;
+                padding-bottom: 0.1em;
+
+    }
+
+    .fund {
+        padding-left: 4em;
+        padding-right: 4em;
+    }
+
+    .funding_body {
+        background-color: plum;
     }
 </style>
 
@@ -58,15 +82,15 @@
             url: "{% url 'all_people_data' %}"
         })
             .done(function( msg ) {
-{#                alert( "Data Saved: " + msg );#}
-{#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
+                {#                alert( "Data Saved: " + msg );#}
+                {#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
 
                 for(var a in msg['people_data']) {
                     var data = msg['people_data'][a];
                     {#                    $('#person_details_calc_' + data['id']).text(data['count']);#}
 
 
-{#                    var start = new moment(data['start_date']);#}
+                    {#                    var start = new moment(data['start_date']);#}
                     var end = new moment(data['end_date']);
 
                     {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
@@ -175,3 +199,16 @@
 
 {% endfor %}
 
+<div class="funds">
+    {% for f in funds %}
+        <div class="fund">
+
+            <p>Funding stream {{ forloop.counter }} of {{ funds|length }}</p>
+            <p>Funds for : {{ f.description_of_intent }}</p>
+            <p>Originally costed {{ f.costed_hours }} hours.</p>
+            <div class="funding_body">
+                <p>Funded by : {{ f.funding_body.name }} - {{ f.funding_body.department }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>

@@ -1,6 +1,26 @@
 [
 
   {
+    "model": "tracker.fundingbody",
+    "pk": 1,
+    "fields": {
+      "name": "DIRI",
+      "department": "COMSC"
+    }
+  },
+
+  {
+    "model": "tracker.fund",
+    "pk": 1,
+    "fields": {
+      "costed_hours": 999999,
+      "description_of_intent": "Fund RSE time in between projects and when writing bids/papers",
+      "cash": null,
+      "funding_body": 1
+    }
+  },
+
+  {
     "model": "tracker.project",
     "pk": 1,
     "fields": {
@@ -41,6 +61,7 @@
     "pk": 1,
     "fields": {
       "name": "First task",
+      "fund": 1,
       "people_assigned": [
         1
       ],
@@ -55,6 +76,7 @@
     "pk": 2,
     "fields": {
       "name": "Middle task",
+      "fund": 1,
       "people_assigned": [
         2
       ],
@@ -71,6 +93,7 @@
     "pk": 3,
     "fields": {
       "name": "Last task",
+      "fund": 1,
       "people_assigned": [
         1
       ],
