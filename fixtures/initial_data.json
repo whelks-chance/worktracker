@@ -25,9 +25,9 @@
     "model": "tracker.fund",
     "pk": 2,
     "fields": {
-      "costed_hours": 600,
-      "reference_name": "Seedcorn 2",
-      "description_of_intent": "Fund RSE time on seedcorn projects.",
+      "costed_hours": 100,
+      "reference_name": "Seedcorn 2 - LV project",
+      "description_of_intent": "Fund RSE time on LV project",
       "cash": null,
       "funding_body": 1
     }

@@ -51,7 +51,7 @@
     {#        background-color: lightcyan;#}
     {#        padding-left: 4em;#}
     }
-    
+
     .task_err {
         background-color: whitesmoke;
         color: red;
@@ -94,64 +94,73 @@
         $.ajax({
             method: "GET",
             url: "{% url 'all_people_data' %}"
-        })
-            .done(function( msg ) {
-                {#                alert( "Data Saved: " + msg );#}
-                {#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
+        }).done(function( msg ) {
+            {#                alert( "Data Saved: " + msg );#}
+            {#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
 
-                for(var a in msg['ProjectTimeAssignment']) {
-                    var data = msg['ProjectTimeAssignment'][a];
-                    {#                    var start = new moment(data['start_date']);#}
-                    var end = new moment(data['end_date']);
-                    {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
-                    var num_weeks = end.diff(moment(), 'week');
-                    var num_total_hours = num_weeks * data['hours_per_week'];
-                    var left_available = num_total_hours - data['count'];
-                    var perc_busy = data['count'] / num_total_hours * 100;
-                    var bad_news_msg = "has " + num_weeks + " weeks left, with " + data['count'] + " hours spoken for." +
-                        " This leaves them " + left_available + " hours. They are " + perc_busy + "% busy";
-                    $('#person_details_calc_' + data['id']).text(bad_news_msg);
-                }
+            for(var a in msg['ProjectTimeAssignment']) {
+                var data = msg['ProjectTimeAssignment'][a];
+                {#                    var start = new moment(data['start_date']);#}
+                var end = new moment(data['end_date']);
+                {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
+                var num_weeks = end.diff(moment(), 'week');
+                var num_total_hours = num_weeks * data['hours_per_week'];
+                var left_available = num_total_hours - data['count'];
+                var perc_busy = data['count'] / num_total_hours * 100;
+                var bad_news_msg = "has " + num_weeks + " weeks left, with " + data['count'] + " hours spoken for." +
+                    " This leaves them " + left_available + " hours. They are " + perc_busy + "% busy";
+                $('#person_details_calc_' + data['id']).text(bad_news_msg);
+            }
 
-            });
+        });
 
         $.ajax({
             method: "GET",
             url: "{% url 'all_task_data' %}"
-        })
-            .done(function( msg ) {
-                for(var a in msg['task_data']) {
-                    var data = msg['task_data'][a];
-{#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
-                    $('#task_working_days_' + data['id']).text("This is " + data['length_working_days'] + " working days.");
-
-                    var html = "";
-                    for(var e in data['errors']){
-                        var err = data['errors'][e];
-                        html += "<div class='task_err'><p>" + err['reason'] + "</p></div>";
-                    }
-                    $('#task_errors_' + data['id']).html(html);
+        }).done(function( msg ) {
+            for(var a in msg['task_data']) {
+                var data = msg['task_data'][a];
+                $('#task_working_days_' + data['id']).text("This is " + data['length_working_days'] + " working days.");
+                var html = "";
+                for(var e in data['errors']){
+                    var err = data['errors'][e];
+                    html += "<div class='task_err'><p>" + err['reason'] + "</p></div>";
                 }
-            });
+                $('#task_errors_' + data['id']).html(html);
+            }
+        });
+
+        $.ajax({
+            method: "GET",
+            url: "{% url 'all_project_data' %}"
+        }).done(function( msg ) {
+            for(var a in msg['project_data']) {
+                var data = msg['project_data'][a];
+                $('#project_data_' + data['id']).text(JSON.stringify(data));
+                var html = "";
+                for(var e in data['errors']){
+                    var err = data['errors'][e];
+                    html += "<div class='project_err'><p>" + err['reason'] + "</p></div>";
+                }
+                $('#project_errors_' + data['id']).html(html);
+            }
+        });
 
         $.ajax({
             method: "GET",
             url: "{% url 'all_fund_data' %}"
-        })
-            .done(function( msg ) {
-                for(var a in msg['fund_data']) {
-                    var data = msg['fund_data'][a];
-{#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
-
-                    var html = "";
-                    for(var e in data['errors']){
-                        var err = data['errors'][e];
-                        html += "<div class='fund_err'><p>" + err['reason'] + "</p></div>";
-                    }
-                    $('#fund_errors_' + data['id']).html(html);
-{#                    $('#fund_errors_' + data['id']).text(JSON.stringify(data['errors']));#}
+        }).done(function( msg ) {
+            for(var a in msg['fund_data']) {
+                var data = msg['fund_data'][a];
+                {#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
+                var html = "";
+                for(var e in data['errors']){
+                    var err = data['errors'][e];
+                    html += "<div class='fund_err'><p>" + err['reason'] + "</p></div>";
                 }
-            });
+                $('#fund_errors_' + data['id']).html(html);
+            }
+        });
     });
 </script>
 
@@ -187,6 +196,8 @@
                 The project will probably last forever.
             {% endif %}
         </p>
+
+        <div id="project_data_{{ p.id }}"></div>
 
         <div class="project_persons">
             <h3>Project has {{ p.person_set.all|length }} workers assigned.</h3>

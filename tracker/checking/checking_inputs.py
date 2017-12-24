@@ -218,6 +218,60 @@ class Fund:
             raise Exception('Call Fund with either model.Fund object or DB id.')
 
 
+class Project:
+
+    @staticmethod
+    def sanity_check_all():
+        all_projects = models.Project.objects.all()
+
+        projects_data = []
+        for p in all_projects:
+            project = Project(p)
+            errors = []
+            project_data = {
+                "id": p.id,
+                "name": p.name,
+                "objectives": p.objectives,
+                # "description_of_intent": f.description_of_intent,
+                # "cash": f.cash,
+            }
+
+            total_task_days = 0
+            project_tasks = p.task_set.all()
+            for t in project_tasks:
+                task = Task(t)
+                total_task_days += task.number_of_working_days()
+            project_data['total_task_days'] = total_task_days
+            project_data['total_working_days'] = project.number_of_working_days()
+
+            # if not project.db_project.cash:
+            #     errors.append(err("No credit reported for Fund."))
+
+            project_data['errors'] = errors
+            projects_data.append(project_data)
+        print(pprint.pformat(projects_data))
+        return projects_data
+
+    # We can create this with either a models.Project or the DB id
+    def __init__(self, project):
+        if isinstance(project, models.Project):
+            self.db_project = project
+        elif isinstance(project, int):
+            self.db_project = models.Project.objects.get(id=project)
+        else:
+            raise Exception('Call Project with either model.Project object or DB id.')
+
+        self.bank_holidays = list(get_bank_holidays())
+
+    def number_of_days(self):
+        return (self.db_project.end_date - self.db_project.start_date).days + 1
+
+    def number_of_working_days(self):
+        if self.db_project.start_date and self.db_project.end_date:
+            return networkdays(self.db_project.start_date, self.db_project.end_date, holidays=self.bank_holidays)
+        else:
+            return 0
+
 if __name__ == "__main__":
     c = Checks()
     c.check()
