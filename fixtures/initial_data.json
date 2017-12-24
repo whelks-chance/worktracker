@@ -120,6 +120,22 @@
   },
 
   {
+    "model": "tracker.task",
+    "pk": 4,
+    "fields": {
+      "name": "Long task for writing papers",
+      "fund": 1,
+      "people_assigned": [
+        2
+      ],
+      "start_date": "2017-11-16 00:00:00",
+      "end_date": "2019-11-18 00:00:00",
+      "project": 2,
+      "preceding_tasks": []
+    }
+  },
+
+  {
     "model": "tracker.projecttimeassignment",
     "pk": 1,
     "fields": {

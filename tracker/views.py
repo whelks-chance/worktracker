@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -18,8 +20,10 @@ def explain(request):
 
 
 def all_task_data(request):
-    from worktracker.tracker.checking.checking_inputs import Task
-    tasks_data = Task.sanity_check_all()
+    from tracker.checking.checking_inputs import Task
+    tasks_data = {
+        "task_data": Task.sanity_check_all()
+    }
     return JsonResponse(tasks_data)
 
 

@@ -28,9 +28,9 @@
     }
 
     .project_tasks {
-{#        padding-left: 4em;#}
-{#        padding-right: 4em;#}
-{#        padding-bottom: 0.1em;#}
+    {#        padding-left: 4em;#}
+    {#        padding-right: 4em;#}
+    {#        padding-bottom: 0.1em;#}
 
     }
 
@@ -48,12 +48,12 @@
     }
 
     .task_preceding_tasks {
-{#        background-color: lightcyan;#}
-{#        padding-left: 4em;#}
+    {#        background-color: lightcyan;#}
+    {#        padding-left: 4em;#}
     }
 
     .funds {
-{#                padding-bottom: 0.1em;#}
+    {#                padding-bottom: 0.1em;#}
 
     }
 
@@ -91,24 +91,31 @@
 
                 for(var a in msg['people_data']) {
                     var data = msg['people_data'][a];
-                    {#                    $('#person_details_calc_' + data['id']).text(data['count']);#}
-
-
                     {#                    var start = new moment(data['start_date']);#}
                     var end = new moment(data['end_date']);
-
                     {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
                     var num_weeks = end.diff(moment(), 'week');
                     var num_total_hours = num_weeks * data['hours_per_week'];
                     var left_available = num_total_hours - data['count'];
                     var perc_busy = data['count'] / num_total_hours * 100;
-
                     var bad_news_msg = "has " + num_weeks + " weeks left, with " + data['count'] + " hours spoken for." +
                         " This leaves them " + left_available + " hours. They are " + perc_busy + "% busy";
-
                     $('#person_details_calc_' + data['id']).text(bad_news_msg);
                 }
 
+            });
+
+        $.ajax({
+            method: "GET",
+            url: "{% url 'all_task_data' %}"
+        })
+            .done(function( msg ) {
+                for(var a in msg['task_data']) {
+                    var data = msg['task_data'][a];
+{#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
+                    $('#task_working_days_' + data['id']).text("This is " + data['length_working_days'] + " working days.");
+
+                }
             });
     });
 </script>
@@ -176,11 +183,13 @@
         <div class="project_tasks">
             <h3>Project has {{ p.task_set.all|length }} tasks.</h3>
 
-                {% for task in p.task_set.all %}
-                    <div class="project_task">
+            {% for task in p.task_set.all %}
+                <div class="project_task">
 
                     <h4>{{ task.name }}</h4>
-                    <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}</p>
+                    <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}. <strong id="task_working_days_{{ task.id }}"></strong></p>
+
+                    <div id="task_detail_{{ task.id }}"></div>
 
                     <div class="fund">
                         <p>Time costed to {{ task.fund.reference_name }} - {{ task.fund.description_of_intent }}</p>
@@ -203,9 +212,9 @@
                             <p><strong>{{ preceding_task.name }}</strong> must complete before this task begins.</p>
                         </div>
                     {% endfor %}
-            </div>
+                </div>
 
-                {% endfor %}
+            {% endfor %}
         </div>
 
     </div>

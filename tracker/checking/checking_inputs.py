@@ -120,11 +120,10 @@ class Task:
 
         tasks_data = []
         for t in all_tasks:
-            task = Task(t.id)
-
-            assert isinstance(t, models.Task)
+            task = Task(t)
             errors = []
             task_data = {
+                "id": t.id,
                 "name": t.name,
                 "fund": t.fund.reference_name,
                 "people_assigned": list(t.people_assigned.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
@@ -187,4 +186,9 @@ if __name__ == "__main__":
     print(t.number_of_days())
     print(t.number_of_working_days())
 
-    # Task.sanity_check_all()
+    t = Task(4)
+    print('\nTask', t.db_task.name)
+    print(t.number_of_days())
+    print(t.number_of_working_days())
+
+    Task.sanity_check_all()
