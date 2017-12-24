@@ -24,6 +24,7 @@ urlpatterns = [
 
     path('all_task_data', views.all_task_data, name='all_task_data'),
     path('all_people_data', views.all_people_data, name='all_people_data'),
+    path('all_fund_data', views.all_fund_data, name='all_fund_data'),
 
     path('admin/', admin.site.urls),
 ]

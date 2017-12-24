@@ -127,6 +127,7 @@ class Task:
                 "name": t.name,
                 "fund": t.fund.reference_name,
                 "people_assigned": list(t.people_assigned.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
+                "peopleid_assigned": list(t.people_assigned.values('id').annotate(name=Min('id')).values_list('name', flat=True)),
                 "start_date": t.start_date.isoformat(),
                 "end_date": t.end_date.isoformat(),
                 "project": t.project.name,
@@ -160,6 +161,59 @@ class Task:
         return networkdays(self.db_task.start_date, self.db_task.end_date, holidays=self.bank_holidays)
 
 
+class Fund:
+
+    @staticmethod
+    def sanity_check_all():
+        all_funds = models.Fund.objects.all()
+
+        funds_data = []
+        for f in all_funds:
+            fund = Fund(f)
+            errors = []
+            fund_data = {
+                "id": f.id,
+                "name": f.reference_name,
+                "costed_hours": f.costed_hours,
+                "description_of_intent": f.description_of_intent,
+                "cash": f.cash,
+
+                # "people_assigned": list(t.people_assigned.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
+                # "start_date": t.start_date.isoformat(),
+            }
+
+            if fund.db_fund.task_set.count() == 0:
+                errors.append(err("Fund is not funding any Tasks"))
+            if not fund.db_fund.cash:
+                errors.append(err("No credit reported for Fund."))
+
+            task_hours = 0
+            for t in fund.db_fund.task_set.all():
+                task_hours += Task(t).number_of_working_days() * 7.5
+
+            if task_hours > fund.db_fund.costed_hours:
+                errors.append(err("Fund is responsible for {} hours,"
+                                  " but was only supposed to fund {}".format(
+                    task_hours,
+                    fund.db_fund.costed_hours
+                )))
+
+
+            fund_data['errors'] = errors
+            funds_data.append(fund_data)
+        print(pprint.pformat(funds_data))
+        return funds_data
+
+    # We can create this with either a models.Fund or the DB id
+    def __init__(self, fund):
+        if isinstance(fund, models.Fund):
+            self.db_fund = fund
+        elif isinstance(fund, int):
+            self.db_fund = models.Fund.objects.get(id=fund)
+        else:
+            raise Exception('Call Fund with either model.Fund object or DB id.')
+
+
 if __name__ == "__main__":
     c = Checks()
     c.check()
@@ -171,24 +225,27 @@ if __name__ == "__main__":
 
     print(wp.allocated_tasks_in_month(11, 2017))
 
-    t = Task(1)
-    print('\nTask', t.db_task.name)
-    print(t.number_of_days())
-    print(t.number_of_working_days())
+    # t = Task(1)
+    # print('\nTask', t.db_task.name)
+    # print(t.number_of_days())
+    # print(t.number_of_working_days())
+    #
+    # t = Task(2)
+    # print('\nTask', t.db_task.name)
+    # print(t.number_of_days())
+    # print(t.number_of_working_days())
+    #
+    # t = Task(3)
+    # print('\nTask', t.db_task.name)
+    # print(t.number_of_days())
+    # print(t.number_of_working_days())
+    #
+    # t = Task(4)
+    # print('\nTask', t.db_task.name)
+    # print(t.number_of_days())
+    # print(t.number_of_working_days())
+    #
+    # Task.sanity_check_all()
 
-    t = Task(2)
-    print('\nTask', t.db_task.name)
-    print(t.number_of_days())
-    print(t.number_of_working_days())
+    Fund.sanity_check_all()
 
-    t = Task(3)
-    print('\nTask', t.db_task.name)
-    print(t.number_of_days())
-    print(t.number_of_working_days())
-
-    t = Task(4)
-    print('\nTask', t.db_task.name)
-    print(t.number_of_days())
-    print(t.number_of_working_days())
-
-    Task.sanity_check_all()

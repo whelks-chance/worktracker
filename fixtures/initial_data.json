@@ -13,7 +13,7 @@
     "model": "tracker.fund",
     "pk": 1,
     "fields": {
-      "costed_hours": 999999,
+      "costed_hours": 500,
       "reference_name": "RSE salaries",
       "description_of_intent": "Fund RSE time in between projects and when writing bids/papers",
       "cash": null,
@@ -73,7 +73,7 @@
     "model": "tracker.task",
     "pk": 1,
     "fields": {
-      "name": "First task",
+      "name": "First task - Design",
       "fund": 1,
       "people_assigned": [
         1
@@ -88,13 +88,13 @@
     "model": "tracker.task",
     "pk": 2,
     "fields": {
-      "name": "Middle task",
+      "name": "Middle task - Create",
       "fund": 2,
       "people_assigned": [
         2
       ],
       "start_date": "2017-11-10 00:00:00",
-      "end_date": "2017-11-15 00:00:00",
+      "end_date": "2018-02-15 00:00:00",
       "project": "1",
       "preceding_tasks": [
         1
@@ -105,13 +105,13 @@
     "model": "tracker.task",
     "pk": 3,
     "fields": {
-      "name": "Last task",
+      "name": "Last task - Maintenance",
       "fund": 1,
       "people_assigned": [
         1
       ],
       "start_date": "2017-11-16 00:00:00",
-      "end_date": "2017-11-18 00:00:00",
+      "end_date": "2019-11-18 00:00:00",
       "project": "1",
       "preceding_tasks": [
         2

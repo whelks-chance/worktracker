@@ -1,9 +1,6 @@
-import json
-
-from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render
-
+from tracker.checking.checking_inputs import Task, Fund
 
 # Create your views here.
 from tracker import models
@@ -20,11 +17,17 @@ def explain(request):
 
 
 def all_task_data(request):
-    from tracker.checking.checking_inputs import Task
     tasks_data = {
         "task_data": Task.sanity_check_all()
     }
     return JsonResponse(tasks_data)
+
+
+def all_fund_data(request):
+    fund_data = {
+        "fund_data": Fund.sanity_check_all()
+    }
+    return JsonResponse(fund_data)
 
 
 def all_people_data(request):
@@ -53,7 +56,7 @@ def all_people_data(request):
 
     api_data = {
         # 'all_time': list(all_time),
-        'people_data': people_data
+        'ProjectTimeAssignment': people_data,
     }
 
     return JsonResponse(api_data)

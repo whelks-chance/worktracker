@@ -64,6 +64,11 @@
         padding-bottom: 1em;
     }
 
+    .fund_err {
+        background-color: whitesmoke;
+        color: red;
+    }
+
     .funding_body {
         background-color: plum;
     }
@@ -89,8 +94,8 @@
                 {#                alert( "Data Saved: " + msg );#}
                 {#                $('#person_details_calc_1').text(JSON.stringify(msg, null, 2));#}
 
-                for(var a in msg['people_data']) {
-                    var data = msg['people_data'][a];
+                for(var a in msg['ProjectTimeAssignment']) {
+                    var data = msg['ProjectTimeAssignment'][a];
                     {#                    var start = new moment(data['start_date']);#}
                     var end = new moment(data['end_date']);
                     {#                alert(end.diff(start, 'week') * data['hours_per_week']);#}
@@ -114,6 +119,27 @@
                     var data = msg['task_data'][a];
 {#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
                     $('#task_working_days_' + data['id']).text("This is " + data['length_working_days'] + " working days.");
+
+                }
+            });
+
+        $.ajax({
+            method: "GET",
+            url: "{% url 'all_fund_data' %}"
+        })
+            .done(function( msg ) {
+                for(var a in msg['fund_data']) {
+                    var data = msg['fund_data'][a];
+{#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
+
+                    var html = "";
+                    for(var e in data['errors']){
+                        var err = data['errors'][e];
+                        html += "<div class='fund_err'><p>" + err['reason'] + "</p></div>";
+                    }
+
+{#                    $('#fund_errors_' + data['id']).text(JSON.stringify(data['errors']));#}
+                    $('#fund_errors_' + data['id']).html(html);
 
                 }
             });
@@ -228,6 +254,7 @@
             <p>Funding stream {{ forloop.counter }} of {{ funds|length }}</p>
             <p>Funds for : {{ f.description_of_intent }}</p>
             <p>Originally costed {{ f.costed_hours }} hours.</p>
+            <div id="fund_errors_{{ f.id }}"></div>
             <div class="funding_body">
                 <p>Funded by : {{ f.funding_body.name }} - {{ f.funding_body.department }}</p>
             </div>
