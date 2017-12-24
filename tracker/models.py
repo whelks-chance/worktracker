@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from workdays import networkdays
 
 
 class Project(models.Model):
@@ -32,6 +33,7 @@ class Person(models.Model):
     projects = models.ManyToManyField(Project)
     hours_per_week = models.IntegerField(default=35)
 
+from tracker.utils.utils import get_bank_holidays
 
 class Task(models.Model):
     name = models.CharField(max_length=200)
@@ -43,6 +45,10 @@ class Task(models.Model):
     preceding_tasks = models.ManyToManyField('Task', related_name='preceding')
     subsequent_tasks = models.ManyToManyField('Task', related_name='subsequent')
     fund = models.ForeignKey(Fund, on_delete=models.CASCADE)
+    hours_per_week = models.IntegerField(default=35)
+
+    def working_days(self):
+        return networkdays(self.start_date, self.end_date, holidays=get_bank_holidays())
 
     def __str__(self):
         return '{}:{}:{}'.format(self.name, self.start_date, self.end_date)

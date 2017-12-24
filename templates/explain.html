@@ -233,7 +233,8 @@
                 <div class="project_task">
 
                     <h4>{{ task.name }}</h4>
-                    <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}. <strong id="task_working_days_{{ task.id }}"></strong></p>
+                    <p>Task begins {{ task.start_date }} and ends {{ task.end_date }}.</p>
+                    <p><strong>{{ task.hours_per_week }}</strong> hours per week. Task is <strong>{{ task.working_days }}</strong> working days long. <strong id="task_working_days_{{ task.id }}"></strong></p>
 
                     <div id="task_detail_{{ task.id }}"></div>
 
@@ -244,7 +245,7 @@
                         </div>
                     </div>
 
-                    <p>{{ task.people_assigned.all|length }} people_assigned</p>
+                    <p>{{ task.people_assigned.all|length }} people assigned</p>
 
                     {% for taskpeople in task.people_assigned.all %}
                         <div class="task_people">
