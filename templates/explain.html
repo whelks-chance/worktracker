@@ -51,6 +51,11 @@
     {#        background-color: lightcyan;#}
     {#        padding-left: 4em;#}
     }
+    
+    .task_err {
+        background-color: whitesmoke;
+        color: red;
+    }
 
     .funds {
     {#                padding-bottom: 0.1em;#}
@@ -120,6 +125,12 @@
 {#                    $('#task_detail_' + data['id']).text(JSON.stringify(data));#}
                     $('#task_working_days_' + data['id']).text("This is " + data['length_working_days'] + " working days.");
 
+                    var html = "";
+                    for(var e in data['errors']){
+                        var err = data['errors'][e];
+                        html += "<div class='task_err'><p>" + err['reason'] + "</p></div>";
+                    }
+                    $('#task_errors_' + data['id']).html(html);
                 }
             });
 
@@ -137,10 +148,8 @@
                         var err = data['errors'][e];
                         html += "<div class='fund_err'><p>" + err['reason'] + "</p></div>";
                     }
-
-{#                    $('#fund_errors_' + data['id']).text(JSON.stringify(data['errors']));#}
                     $('#fund_errors_' + data['id']).html(html);
-
+{#                    $('#fund_errors_' + data['id']).text(JSON.stringify(data['errors']));#}
                 }
             });
     });
@@ -224,7 +233,6 @@
                         </div>
                     </div>
 
-
                     <p>{{ task.people_assigned.all|length }} people_assigned</p>
 
                     {% for taskpeople in task.people_assigned.all %}
@@ -238,6 +246,7 @@
                             <p><strong>{{ preceding_task.name }}</strong> must complete before this task begins.</p>
                         </div>
                     {% endfor %}
+                    <div id="task_errors_{{ task.id }}"></div>
                 </div>
 
             {% endfor %}

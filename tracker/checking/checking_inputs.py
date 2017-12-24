@@ -139,6 +139,13 @@ class Task:
             if t.end_date < t.start_date:
                 errors.append(err("Task ends before it starts"))
 
+            preceding_tasks = t.preceding_tasks.all()
+            if preceding_tasks.count():
+                print(preceding_tasks)
+                latest_preceding_task = preceding_tasks.latest('end_date')
+                if t.start_date < latest_preceding_task.end_date:
+                    errors.append(err("Task starts before previous task {} ends.".format(latest_preceding_task.name)))
+
             task_data['errors'] = errors
             tasks_data.append(task_data)
         print(pprint.pformat(tasks_data))
@@ -177,9 +184,6 @@ class Fund:
                 "costed_hours": f.costed_hours,
                 "description_of_intent": f.description_of_intent,
                 "cash": f.cash,
-
-                # "people_assigned": list(t.people_assigned.values('id').annotate(name=Min('name')).values_list('name', flat=True)),
-                # "start_date": t.start_date.isoformat(),
             }
 
             if fund.db_fund.task_set.count() == 0:
@@ -245,7 +249,7 @@ if __name__ == "__main__":
     # print(t.number_of_days())
     # print(t.number_of_working_days())
     #
-    # Task.sanity_check_all()
+    Task.sanity_check_all()
 
-    Fund.sanity_check_all()
+    # Fund.sanity_check_all()
 
