@@ -272,6 +272,7 @@ class Project:
         else:
             return 0
 
+
 if __name__ == "__main__":
     c = Checks()
     c.check()
@@ -306,4 +307,3 @@ if __name__ == "__main__":
     Task.sanity_check_all()
 
     # Fund.sanity_check_all()
-
